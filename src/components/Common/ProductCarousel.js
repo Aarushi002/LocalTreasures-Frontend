@@ -135,8 +135,7 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
             fontSize: '4rem',
             backgroundImage: currentProduct.images?.[0]?.url ? 
               `url(${currentProduct.images[0].url.startsWith('/') ? 
-                `${process.env.REACT_APP_API_BASE_URL || 'http://localhost:5000'}${currentProduct.images[0].url}` : 
-                currentProduct.images[0].url})` : 'none',
+                ``${process.env.REACT_APP_API_BASE_URL || 'https://local-treasures-backend.vercel.app'}${currentProduct.images[0].url}`)` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             position: 'relative',

@@ -469,7 +469,7 @@ const Home = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '3rem',
-                        backgroundImage: product.images?.[0]?.url ? `url(${product.images[0].url.startsWith('/') ? ``${process.env.REACT_APP_API_BASE_URL || 'https://local-treasures-backend.vercel.app'}${product.images[0].url}`` : product.images[0].url})` : 'none',
+                        backgroundImage: product.images?.[0]?.url ? `url(${product.images[0].url.startsWith('/') ? `${process.env.REACT_APP_API_BASE_URL || 'https://local-treasures-backend.vercel.app'}${product.images[0].url}` : product.images[0].url})` : 'none',
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                       }}

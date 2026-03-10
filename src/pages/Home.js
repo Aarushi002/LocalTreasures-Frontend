@@ -26,7 +26,7 @@ const Home = () => {
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    dispatch(getFeaturedProducts(12)); // Get more products for carousel
+    dispatch(getFeaturedProducts(12));
     dispatch(getCategories());
   }, [dispatch]);
 
@@ -38,7 +38,6 @@ const Home = () => {
     }
   };
 
-  // Category icon and display name mapping
   const categoryMapping = {
     handmade: { name: 'Handmade Crafts', icon: '🎨' },
     food: { name: 'Local Food', icon: '🍯' },
@@ -49,17 +48,29 @@ const Home = () => {
     other: { name: 'Other', icon: '🛍️' },
   };
 
-  // Transform backend categories to display format
-  const transformedCategories = categories.map(cat => ({
+  const transformedCategories = categories.map((cat) => ({
     id: cat._id,
     name: categoryMapping[cat._id]?.name || cat._id,
     icon: categoryMapping[cat._id]?.icon || '🛍️',
     count: cat.count,
   }));
 
+  const getProductImageUrl = (product) => {
+    const imageUrl = product?.images?.[0]?.url;
+
+    if (!imageUrl) return 'none';
+
+    if (imageUrl.startsWith('/')) {
+      const baseUrl =
+        process.env.REACT_APP_API_BASE_URL || 'https://local-treasures-backend.vercel.app';
+      return `url(${baseUrl}${imageUrl})`;
+    }
+
+    return `url(${imageUrl})`;
+  };
+
   return (
     <Box>
-      {/* Hero Section */}
       <Box
         sx={{
           background: 'linear-gradient(135deg, #1B5E20 0%, #2E7D32 25%, #4CAF50 75%, #66BB6A 100%)',
@@ -83,7 +94,7 @@ const Home = () => {
               radial-gradient(circle at 40% 40%, rgba(255,255,255,0.05) 0%, transparent 50%)
             `,
             pointerEvents: 'none',
-          }
+          },
         }}
       >
         <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
@@ -125,6 +136,7 @@ const Home = () => {
                     Treasures ✨
                   </Box>
                 </Typography>
+
                 <Typography
                   variant="h5"
                   sx={{
@@ -136,13 +148,14 @@ const Home = () => {
                     textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
                   }}
                 >
-                  Connect with amazing local artisans, home chefs, and small businesses 
+                  Connect with amazing local artisans, home chefs, and small businesses
                   right in your neighborhood. Support your community and discover unique treasures!
                 </Typography>
-                <Box 
-                  sx={{ 
-                    display: 'flex', 
-                    gap: 3, 
+
+                <Box
+                  sx={{
+                    display: 'flex',
+                    gap: 3,
                     flexWrap: 'wrap',
                     mb: 4,
                   }}
@@ -151,8 +164,8 @@ const Home = () => {
                     variant="contained"
                     size="large"
                     onClick={handleGetStarted}
-                    sx={{ 
-                      px: 4, 
+                    sx={{
+                      px: 4,
                       py: 2,
                       fontSize: '1.1rem',
                       fontWeight: 600,
@@ -172,6 +185,7 @@ const Home = () => {
                   >
                     🚀 Get Started
                   </Button>
+
                   <Button
                     variant="outlined"
                     size="large"
@@ -202,6 +216,7 @@ const Home = () => {
                 </Box>
               </Box>
             </Grid>
+
             <Grid item xs={12} md={6}>
               <Box
                 sx={{
@@ -222,10 +237,9 @@ const Home = () => {
                   },
                 }}
               >
-                {/* Product Carousel with enhanced styling */}
-                <Box 
-                  sx={{ 
-                    width: '100%', 
+                <Box
+                  sx={{
+                    width: '100%',
                     maxWidth: 450,
                     position: 'relative',
                     '&::before': {
@@ -239,11 +253,11 @@ const Home = () => {
                       borderRadius: 4,
                       filter: 'blur(20px)',
                       zIndex: -1,
-                    }
+                    },
                   }}
                 >
-                  <ProductCarousel 
-                    products={featuredProducts.slice(0, 8)} 
+                  <ProductCarousel
+                    products={featuredProducts.slice(0, 8)}
                     title="✨ Amazing Local Products"
                     heroMode={true}
                   />
@@ -254,7 +268,6 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* Features Section */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography
           variant="h3"
@@ -265,7 +278,7 @@ const Home = () => {
         >
           Why Choose Local Treasures?
         </Typography>
-        
+
         <Grid container spacing={4}>
           <Grid item xs={12} md={4}>
             <Box textAlign="center">
@@ -280,11 +293,12 @@ const Home = () => {
                 Hyperlocal Discovery
               </Typography>
               <Typography color="text.secondary">
-                Find amazing products and services within 10km of your location. 
+                Find amazing products and services within 10km of your location.
                 Support your local community and reduce environmental impact.
               </Typography>
             </Box>
           </Grid>
+
           <Grid item xs={12} md={4}>
             <Box textAlign="center">
               <Store
@@ -298,11 +312,12 @@ const Home = () => {
                 Verified Artisans
               </Typography>
               <Typography color="text.secondary">
-                All sellers are verified local artisans, home chefs, and small businesses. 
+                All sellers are verified local artisans, home chefs, and small businesses.
                 Quality and authenticity guaranteed.
               </Typography>
             </Box>
           </Grid>
+
           <Grid item xs={12} md={4}>
             <Box textAlign="center">
               <LocalDining
@@ -316,7 +331,7 @@ const Home = () => {
                 Real-time Chat
               </Typography>
               <Typography color="text.secondary">
-                Chat directly with sellers, ask questions, and customize your orders. 
+                Chat directly with sellers, ask questions, and customize your orders.
                 Build genuine connections with local creators.
               </Typography>
             </Box>
@@ -324,7 +339,6 @@ const Home = () => {
         </Grid>
       </Container>
 
-      {/* Categories Section */}
       <Box sx={{ backgroundColor: 'grey.50', py: 8 }}>
         <Container maxWidth="lg">
           <Typography
@@ -336,7 +350,7 @@ const Home = () => {
           >
             Popular Categories
           </Typography>
-          
+
           <Grid container spacing={3}>
             {transformedCategories.length > 0 ? (
               transformedCategories.slice(0, 8).map((category, index) => (
@@ -374,7 +388,6 @@ const Home = () => {
                 </Grid>
               ))
             ) : (
-              // Fallback skeleton categories while loading
               [1, 2, 3, 4].map((i) => (
                 <Grid item xs={6} md={3} key={i}>
                   <Card
@@ -395,11 +408,7 @@ const Home = () => {
                       <Typography variant="h6" gutterBottom>
                         Loading...
                       </Typography>
-                      <Chip
-                        label="..."
-                        color="primary"
-                        size="small"
-                      />
+                      <Chip label="..." color="primary" size="small" />
                     </CardContent>
                   </Card>
                 </Grid>
@@ -409,7 +418,6 @@ const Home = () => {
         </Container>
       </Box>
 
-      {/* Featured Products Section */}
       <Container maxWidth="lg" sx={{ py: 8 }}>
         <Typography
           variant="h3"
@@ -420,7 +428,7 @@ const Home = () => {
         >
           {featuredProductsFallback ? 'Popular Products' : 'Featured Products'}
         </Typography>
-        
+
         {featuredProductsFallback && (
           <Typography
             variant="body1"
@@ -469,7 +477,7 @@ const Home = () => {
                         alignItems: 'center',
                         justifyContent: 'center',
                         fontSize: '3rem',
-                        backgroundImage: product.images?.[0]?.url ? `url(${product.images[0].url.startsWith('/') ? `${process.env.REACT_APP_API_BASE_URL || 'https://local-treasures-backend.vercel.app'}${product.images[0].url}` : product.images[0].url})` : 'none',
+                        backgroundImage: getProductImageUrl(product),
                         backgroundSize: 'cover',
                         backgroundPosition: 'center',
                       }}
@@ -478,17 +486,30 @@ const Home = () => {
                         categoryMapping[product.category]?.icon || '🎨'
                       )}
                     </CardMedia>
+
                     <CardContent>
                       <Typography variant="h6" noWrap>
                         {product.name}
                       </Typography>
+
                       <Typography color="text.secondary" variant="body2">
-                        {product.seller?.businessInfo?.businessName || product.seller?.name || 'Local Artisan'}
+                        {product.seller?.businessInfo?.businessName ||
+                          product.seller?.name ||
+                          'Local Artisan'}
                       </Typography>
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: 1 }}>
+
+                      <Box
+                        sx={{
+                          display: 'flex',
+                          justifyContent: 'space-between',
+                          alignItems: 'center',
+                          mt: 1,
+                        }}
+                      >
                         <Typography variant="h6" color="primary">
                           ${product.price?.toFixed(2)}
                         </Typography>
+
                         {product.ratings?.count > 0 && (
                           <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                             <Typography variant="body2" color="text.secondary">
@@ -505,7 +526,6 @@ const Home = () => {
                 </Grid>
               ))
             ) : (
-              // Placeholder products if no featured products
               <>
                 {[1, 2, 3, 4].map((i) => (
                   <Grid item xs={12} sm={6} md={3} key={i}>
@@ -529,10 +549,9 @@ const Home = () => {
                       >
                         🎨
                       </CardMedia>
+
                       <CardContent>
-                        <Typography variant="h6">
-                          Sample Product {i}
-                        </Typography>
+                        <Typography variant="h6">Sample Product {i}</Typography>
                         <Typography color="text.secondary" variant="body2">
                           Local Artisan
                         </Typography>

@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 // Create axios instance
-const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000/api';
-export const BASE_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || 'http://localhost:5000';
+const API_URL = process.env.REACT_APP_API_URL || 'https://local-treasures-backend.vercel.app/api';
+export const BASE_URL = process.env.REACT_APP_API_URL?.replace('/api', '') || 'https://local-treasures-backend.vercel.app';
 
 const api = axios.create({
   baseURL: API_URL,

@@ -15,7 +15,7 @@ import { addNotification } from '../store/slices/uiSlice';
 
 let socket = null;
 
-const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'http://localhost:5000';
+const SOCKET_URL = process.env.REACT_APP_SOCKET_URL || 'https://local-treasures-backend.vercel.app';
 
 export const initializeSocket = (token) => {
   if (socket) {

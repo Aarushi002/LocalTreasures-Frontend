@@ -22,7 +22,9 @@ const Home = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { featuredProducts, categories, isLoading, featuredProductsFallback } = useSelector((state) => state.products);
+  const { featuredProducts, categories, isLoading, featuredProductsFallback } = useSelector(
+    (state) => state.products
+  );
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
@@ -62,7 +64,8 @@ const Home = () => {
 
     if (imageUrl.startsWith('/')) {
       const baseUrl =
-        process.env.REACT_APP_API_BASE_URL || 'https://local-treasures-backend.vercel.app';
+        process.env.REACT_APP_API_URL?.replace('/api', '') ||
+        'https://local-treasures-backend.vercel.app';
       return `url(${baseUrl}${imageUrl})`;
     }
 
@@ -148,8 +151,8 @@ const Home = () => {
                     textShadow: '1px 1px 2px rgba(0,0,0,0.2)',
                   }}
                 >
-                  Connect with amazing local artisans, home chefs, and small businesses
-                  right in your neighborhood. Support your community and discover unique treasures!
+                  Connect with amazing local artisans, home chefs, and small businesses right in
+                  your neighborhood. Support your community and discover unique treasures!
                 </Typography>
 
                 <Box
@@ -249,7 +252,8 @@ const Home = () => {
                       left: -20,
                       right: -20,
                       bottom: -20,
-                      background: 'linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
+                      background:
+                        'linear-gradient(45deg, rgba(255,255,255,0.1), rgba(255,255,255,0.05))',
                       borderRadius: 4,
                       filter: 'blur(20px)',
                       zIndex: -1,
@@ -269,13 +273,7 @@ const Home = () => {
       </Box>
 
       <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Typography
-          variant="h3"
-          component="h2"
-          textAlign="center"
-          gutterBottom
-          sx={{ mb: 6 }}
-        >
+        <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ mb: 6 }}>
           Why Choose Local Treasures?
         </Typography>
 
@@ -293,8 +291,8 @@ const Home = () => {
                 Hyperlocal Discovery
               </Typography>
               <Typography color="text.secondary">
-                Find amazing products and services within 10km of your location.
-                Support your local community and reduce environmental impact.
+                Find amazing products and services within 10km of your location. Support your local
+                community and reduce environmental impact.
               </Typography>
             </Box>
           </Grid>
@@ -312,8 +310,8 @@ const Home = () => {
                 Verified Artisans
               </Typography>
               <Typography color="text.secondary">
-                All sellers are verified local artisans, home chefs, and small businesses.
-                Quality and authenticity guaranteed.
+                All sellers are verified local artisans, home chefs, and small businesses. Quality
+                and authenticity guaranteed.
               </Typography>
             </Box>
           </Grid>
@@ -331,8 +329,8 @@ const Home = () => {
                 Real-time Chat
               </Typography>
               <Typography color="text.secondary">
-                Chat directly with sellers, ask questions, and customize your orders.
-                Build genuine connections with local creators.
+                Chat directly with sellers, ask questions, and customize your orders. Build genuine
+                connections with local creators.
               </Typography>
             </Box>
           </Grid>
@@ -341,13 +339,7 @@ const Home = () => {
 
       <Box sx={{ backgroundColor: 'grey.50', py: 8 }}>
         <Container maxWidth="lg">
-          <Typography
-            variant="h3"
-            component="h2"
-            textAlign="center"
-            gutterBottom
-            sx={{ mb: 6 }}
-          >
+          <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ mb: 6 }}>
             Popular Categories
           </Typography>
 
@@ -419,44 +411,22 @@ const Home = () => {
       </Box>
 
       <Container maxWidth="lg" sx={{ py: 8 }}>
-        <Typography
-          variant="h3"
-          component="h2"
-          textAlign="center"
-          gutterBottom
-          sx={{ mb: 2 }}
-        >
+        <Typography variant="h3" component="h2" textAlign="center" gutterBottom sx={{ mb: 2 }}>
           {featuredProductsFallback ? 'Popular Products' : 'Featured Products'}
         </Typography>
 
-        {featuredProductsFallback && (
-          <Typography
-            variant="body1"
-            textAlign="center"
-            color="text.secondary"
-            sx={{ mb: 6 }}
-          >
-            Showing most popular products in your area
-          </Typography>
-        )}
-
-        {!featuredProductsFallback && (
-          <Typography
-            variant="body1"
-            textAlign="center"
-            color="text.secondary"
-            sx={{ mb: 6 }}
-          >
-            Hand-picked products from local artisans
-          </Typography>
-        )}
+        <Typography variant="body1" textAlign="center" color="text.secondary" sx={{ mb: 6 }}>
+          {featuredProductsFallback
+            ? 'Showing most popular products in your area'
+            : 'Hand-picked products from local artisans'}
+        </Typography>
 
         {isLoading ? (
           <LoadingSpinner message="Loading featured products..." />
         ) : (
           <Grid container spacing={3}>
             {featuredProducts.length > 0 ? (
-              featuredProducts.slice(8, 12).map((product, index) => (
+              featuredProducts.slice(0, 4).map((product, index) => (
                 <Grid item xs={12} sm={6} md={3} key={product._id || index}>
                   <Card
                     sx={{
@@ -482,9 +452,8 @@ const Home = () => {
                         backgroundPosition: 'center',
                       }}
                     >
-                      {!product.images?.[0]?.url && (
-                        categoryMapping[product.category]?.icon || '🎨'
-                      )}
+                      {!product.images?.[0]?.url &&
+                        (categoryMapping[product.category]?.icon || '🎨')}
                     </CardMedia>
 
                     <CardContent>
@@ -507,7 +476,7 @@ const Home = () => {
                         }}
                       >
                         <Typography variant="h6" color="primary">
-                          ${product.price?.toFixed(2)}
+                          ${Number(product.price || 0).toFixed(2)}
                         </Typography>
 
                         {product.ratings?.count > 0 && (
@@ -526,43 +495,11 @@ const Home = () => {
                 </Grid>
               ))
             ) : (
-              <>
-                {[1, 2, 3, 4].map((i) => (
-                  <Grid item xs={12} sm={6} md={3} key={i}>
-                    <Card
-                      sx={{
-                        opacity: 0.6,
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => navigate('/products')}
-                    >
-                      <CardMedia
-                        component="div"
-                        sx={{
-                          height: 200,
-                          backgroundColor: 'grey.200',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '3rem',
-                        }}
-                      >
-                        🎨
-                      </CardMedia>
-
-                      <CardContent>
-                        <Typography variant="h6">Sample Product {i}</Typography>
-                        <Typography color="text.secondary" variant="body2">
-                          Local Artisan
-                        </Typography>
-                        <Typography variant="h6" color="primary" sx={{ mt: 1 }}>
-                          $25.00
-                        </Typography>
-                      </CardContent>
-                    </Card>
-                  </Grid>
-                ))}
-              </>
+              <Grid item xs={12}>
+                <Typography textAlign="center" color="text.secondary">
+                  No featured products available right now.
+                </Typography>
+              </Grid>
             )}
           </Grid>
         )}

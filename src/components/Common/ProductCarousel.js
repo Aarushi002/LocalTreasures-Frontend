@@ -15,40 +15,32 @@ import {
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
 
-const ProductCarousel = ({ products = [], title = "Featured Products", heroMode = false }) => {
+const ProductCarousel = ({ products = [], title = 'Featured Products', heroMode = false }) => {
   const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Auto-advance carousel every 4 seconds
   useEffect(() => {
     if (products.length <= 1) return;
 
     const interval = setInterval(() => {
-      setCurrentIndex((prevIndex) => 
-        prevIndex === products.length - 1 ? 0 : prevIndex + 1
-      );
+      setCurrentIndex((prevIndex) => (prevIndex === products.length - 1 ? 0 : prevIndex + 1));
     }, 4000);
 
     return () => clearInterval(interval);
   }, [products.length]);
 
   const handlePrevious = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === 0 ? products.length - 1 : prevIndex - 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? products.length - 1 : prevIndex - 1));
   };
 
   const handleNext = () => {
-    setCurrentIndex((prevIndex) => 
-      prevIndex === products.length - 1 ? 0 : prevIndex + 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === products.length - 1 ? 0 : prevIndex + 1));
   };
 
   const handleProductClick = (productId) => {
     navigate(`/products/${productId}`);
   };
 
-  // Category icon mapping
   const categoryMapping = {
     handmade: { icon: '🎨' },
     food: { icon: '🍯' },
@@ -78,16 +70,26 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
   }
 
   const currentProduct = products[currentIndex];
+  const imageUrl = currentProduct?.images?.[0]?.url;
+
+  const backendBaseUrl =
+    process.env.REACT_APP_API_URL?.replace('/api', '') ||
+    'https://local-treasures-backend.vercel.app';
+
+  const resolvedImageUrl = imageUrl
+    ? imageUrl.startsWith('/')
+      ? `${backendBaseUrl}${imageUrl}`
+      : imageUrl
+    : null;
 
   return (
     <Box sx={{ position: 'relative', width: '100%' }}>
-      {/* Title */}
       <Typography
         variant="h5"
         component="h3"
         gutterBottom
-        sx={{ 
-          mb: 3, 
+        sx={{
+          mb: 3,
           fontWeight: 'bold',
           color: heroMode ? 'white' : 'inherit',
           textAlign: 'center',
@@ -99,7 +101,6 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
         {title}
       </Typography>
 
-      {/* Carousel Card */}
       <Card
         sx={{
           height: 450,
@@ -108,22 +109,21 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
           transition: 'transform 0.3s ease, box-shadow 0.3s ease',
           '&:hover': {
             transform: heroMode ? 'scale(1.03) rotateY(2deg)' : 'scale(1.02)',
-            boxShadow: heroMode ? 
-              '0 15px 35px rgba(255, 255, 255, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2)' : 
-              '0 8px 25px rgba(0, 0, 0, 0.15)',
+            boxShadow: heroMode
+              ? '0 15px 35px rgba(255, 255, 255, 0.3), 0 5px 15px rgba(0, 0, 0, 0.2)'
+              : '0 8px 25px rgba(0, 0, 0, 0.15)',
           },
           overflow: 'hidden',
           backgroundColor: heroMode ? 'rgba(255, 255, 255, 0.98)' : 'white',
           backdropFilter: heroMode ? 'blur(15px)' : 'none',
           borderRadius: heroMode ? 3 : 2,
           border: heroMode ? '1px solid rgba(255, 255, 255, 0.2)' : 'none',
-          boxShadow: heroMode ? 
-            '0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(255, 255, 255, 0.1)' : 
-            '0 2px 8px rgba(0, 0, 0, 0.1)',
+          boxShadow: heroMode
+            ? '0 8px 32px rgba(0, 0, 0, 0.1), 0 4px 16px rgba(255, 255, 255, 0.1)'
+            : '0 2px 8px rgba(0, 0, 0, 0.1)',
         }}
         onClick={() => handleProductClick(currentProduct._id)}
       >
-        {/* Product Image */}
         <CardMedia
           component="div"
           sx={{
@@ -133,29 +133,27 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
             alignItems: 'center',
             justifyContent: 'center',
             fontSize: '4rem',
-            backgroundImage: currentProduct.images?.[0]?.url ? 
-              `url(${currentProduct.images[0].url.startsWith('/') ? 
-                ``${process.env.REACT_APP_API_BASE_URL || 'https://local-treasures-backend.vercel.app'}${currentProduct.images[0].url}`)` : 'none',
+            backgroundImage: resolvedImageUrl ? `url(${resolvedImageUrl})` : 'none',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
             position: 'relative',
-            '&::before': heroMode ? {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              background: 'linear-gradient(180deg, transparent 0%, transparent 70%, rgba(0,0,0,0.3) 100%)',
-              zIndex: 1,
-            } : {},
+            '&::before': heroMode
+              ? {
+                  content: '""',
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  right: 0,
+                  bottom: 0,
+                  background:
+                    'linear-gradient(180deg, transparent 0%, transparent 70%, rgba(0,0,0,0.3) 100%)',
+                  zIndex: 1,
+                }
+              : {},
           }}
         >
-          {!currentProduct.images?.[0]?.url && (
-            categoryMapping[currentProduct.category]?.icon || '🎨'
-          )}
+          {!resolvedImageUrl && (categoryMapping[currentProduct.category]?.icon || '🎨')}
 
-          {/* Navigation Arrows */}
           {products.length > 1 && (
             <>
               <IconButton
@@ -206,7 +204,6 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
             </>
           )}
 
-          {/* Featured Badge */}
           {currentProduct.isFeatured && (
             <Chip
               label="⭐ Featured"
@@ -231,13 +228,12 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
           )}
         </CardMedia>
 
-        {/* Product Information */}
         <CardContent sx={{ p: 3 }}>
-          <Typography 
-            variant="h6" 
-            noWrap 
-            sx={{ 
-              fontWeight: 'bold', 
+          <Typography
+            variant="h6"
+            noWrap
+            sx={{
+              fontWeight: 'bold',
               mb: 1,
               fontSize: '1.1rem',
               color: heroMode ? '#2E7D32' : 'inherit',
@@ -245,39 +241,42 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
           >
             {currentProduct.name}
           </Typography>
-          
-          <Typography 
-            color="text.secondary" 
+
+          <Typography
+            color="text.secondary"
             variant="body2"
-            sx={{ 
+            sx={{
               mb: 2,
               fontSize: '0.9rem',
               fontWeight: 500,
             }}
           >
-            by {currentProduct.seller?.businessInfo?.businessName || 
-                 currentProduct.seller?.name || 
-                 'Local Artisan'}
+            by{' '}
+            {currentProduct.seller?.businessInfo?.businessName ||
+              currentProduct.seller?.name ||
+              'Local Artisan'}
           </Typography>
 
-          <Box sx={{ 
-            display: 'flex', 
-            justifyContent: 'space-between', 
-            alignItems: 'center',
-            mb: 2
-          }}>
-            <Typography 
-              variant="h6" 
-              color="primary" 
-              sx={{ 
+          <Box
+            sx={{
+              display: 'flex',
+              justifyContent: 'space-between',
+              alignItems: 'center',
+              mb: 2,
+            }}
+          >
+            <Typography
+              variant="h6"
+              color="primary"
+              sx={{
                 fontWeight: 'bold',
                 fontSize: '1.3rem',
                 color: heroMode ? '#FF6B35' : 'primary.main',
               }}
             >
-              ${currentProduct.price?.toFixed(2)}
+              ${Number(currentProduct.price || 0).toFixed(2)}
             </Typography>
-            
+
             {currentProduct.ratings?.count > 0 && (
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
                 <StarIcon sx={{ color: '#FFD700', fontSize: '1.1rem' }} />
@@ -291,14 +290,15 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
             )}
           </Box>
 
-          {/* Dots Indicator */}
           {products.length > 1 && (
-            <Box sx={{ 
-              display: 'flex', 
-              justifyContent: 'center', 
-              gap: 1,
-              mt: 2
-            }}>
+            <Box
+              sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                gap: 1,
+                mt: 2,
+              }}
+            >
               {products.map((_, index) => (
                 <Box
                   key={index}
@@ -324,14 +324,13 @@ const ProductCarousel = ({ products = [], title = "Featured Products", heroMode 
         </CardContent>
       </Card>
 
-      {/* Product Counter */}
       <Typography
         variant="body2"
         color={heroMode ? 'rgba(255, 255, 255, 0.8)' : 'text.secondary'}
-        sx={{ 
-          textAlign: 'center', 
+        sx={{
+          textAlign: 'center',
           mt: 1,
-          fontSize: '0.75rem'
+          fontSize: '0.75rem',
         }}
       >
         {currentIndex + 1} of {products.length}
